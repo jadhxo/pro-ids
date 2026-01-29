@@ -1,33 +1,63 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { apiRequest } from "../api/http";
+import { Link } from "react-router-dom";
+
+type CourseProgress = {
+  id: number;
+  title: string;
+  progress: number;
+};
 
 export default function MyLearningPage() {
-  const [courses, setCourses] = useState<any[]>([]);
+  const [courses, setCourses] = useState<CourseProgress[]>([]);
 
   useEffect(() => {
-    apiRequest("/courses").then(setCourses);
+    apiRequest("/my-progress").then(setCourses);
   }, []);
 
   return (
-    <div>
-      <h1>My Learning</h1>
+    <div style={{ padding: 32 }}>
+      <h1 style={{ fontSize: 28, fontWeight: 800 }}>
+        My Learning
+      </h1>
 
       {courses.map((course) => (
-        <div key={course.id} style={{ marginBottom: 24 }}>
+        <div
+          key={course.id}
+          style={{
+            marginTop: 24,
+            padding: 20,
+            borderRadius: 16,
+            background: "#ffffff",
+          }}
+        >
           <h3>{course.title}</h3>
 
-          <ul>
-            {course.lessons?.map((lesson: any) => (
-              <li key={lesson.id}>
-                <Link
-                  to={`/course/${course.id}/lesson/${lesson.id}`}
-                >
-                  {lesson.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <div
+            style={{
+              height: 10,
+              background: "#e5e7eb",
+              borderRadius: 8,
+              marginTop: 12,
+            }}
+          >
+            <div
+              style={{
+                width: `${course.progress}%`,
+                height: "100%",
+                background: "#2f66e6",
+                borderRadius: 8,
+              }}
+            />
+          </div>
+
+          <p style={{ marginTop: 8 }}>
+            {course.progress}% completed
+          </p>
+
+          <Link to={`/course/${course.id}`}>
+            Continue →
+          </Link>
         </div>
       ))}
     </div>
