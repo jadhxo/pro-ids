@@ -1,4 +1,5 @@
 import { Outlet, NavLink } from "react-router-dom";
+import Topbar from "./Topbar";
 
 export default function InstructorLayout() {
   return (
@@ -23,15 +24,20 @@ export default function InstructorLayout() {
       </aside>
 
       {/* MAIN */}
-      <main
-        style={{
-          flex: 1,
-          background: "#f8fafc",
-          padding: 32,
-        }}
-      >
-        <Outlet />
-      </main>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        {/* ✅ TOPBAR WITH REQUIRED PROP */}
+        <Topbar title="Instructor Dashboard" />
+
+        <main
+          style={{
+            flex: 1,
+            background: "#f8fafc",
+            padding: 32,
+          }}
+        >
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 }

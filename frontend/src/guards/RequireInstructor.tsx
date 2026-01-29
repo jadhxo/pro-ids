@@ -1,15 +1,15 @@
 import { Navigate } from "react-router-dom";
 import type { ReactNode } from "react";
-import { useAuth } from "../src/context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 
 export default function RequireInstructor({
   children,
 }: {
   children: ReactNode;
 }) {
-  const { user } = useAuth();
+  const { isAuthenticated, role } = useAuth();
 
-  if (!user) {
+  if (!isAuthenticated) {
     return (
       <Navigate
         to="/login?error=signin_required"
@@ -18,7 +18,7 @@ export default function RequireInstructor({
     );
   }
 
-  if (user.role !== "INSTRUCTOR") {
+  if (role !== "instructor") {
     return (
       <Navigate
         to="/login?error=not_instructor"

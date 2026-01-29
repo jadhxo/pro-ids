@@ -3,7 +3,7 @@ import { useNavigate, Link, useLocation } from "react-router-dom";
 import AuthLayout from "../components/auth/AuthLayout";
 import AuthInput from "../components/auth/AuthInput";
 import PrimaryButton from "../components/ui/PrimaryButton";
-import { useAuth } from "../src/context/AuthContext";
+import { useAuth } from "../context/AuthContext"; // ✅ FIXED PATH
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -26,22 +26,20 @@ export default function LoginPage() {
   function handleSubmit() {
     if (!isValid) return;
 
-    // DEFAULT: login as student
-    loginAsStudent();
-    navigate("/");
+    loginAsStudent();          // ✅ authoritative
+    navigate("/", { replace: true });
   }
 
   function handleInstructorLogin() {
-    loginAsInstructor();
-    navigate("/instructor/overview");
+    loginAsInstructor();       // ✅ authoritative
+    navigate("/instructor/overview", { replace: true });
   }
 
   return (
     <AuthLayout
       title="Welcome Back to Excellence."
-      description="Dive back into your courses and pick up right where you left off. Your next big achievement is waiting."
+      description="Dive back into your courses and pick up right where you left off."
     >
-      {/* WARNING BANNER */}
       {error && (
         <div
           style={{
@@ -54,17 +52,13 @@ export default function LoginPage() {
             fontWeight: 600,
           }}
         >
-          {error === "signin_required" &&
-            "Please sign in to continue."}
+          {error === "signin_required" && "Please sign in to continue."}
           {error === "not_instructor" &&
             "This area is restricted to instructors only."}
         </div>
       )}
 
       <h2 style={{ marginBottom: 8 }}>Sign In</h2>
-      <p style={{ color: "#64748b", marginBottom: 32 }}>
-        Please enter your details below.
-      </p>
 
       <AuthInput
         label="Email Address"
@@ -80,17 +74,10 @@ export default function LoginPage() {
         value={password}
         onChange={setPassword}
         error={passwordError}
-        rightLink={
-          <a href="#" style={{ fontSize: 12, color: "#2f66e6" }}>
-            FORGOT?
-          </a>
-        }
       />
 
       <div onClick={handleSubmit}>
-        <PrimaryButton disabled={!isValid}>
-          Sign In
-        </PrimaryButton>
+        <PrimaryButton disabled={!isValid}>Sign In</PrimaryButton>
       </div>
 
       {/* DEV INSTRUCTOR LOGIN */}
@@ -113,10 +100,7 @@ export default function LoginPage() {
 
       <p style={{ marginTop: 32, textAlign: "center", color: "#64748b" }}>
         Don’t have an account?{" "}
-        <Link
-          to="/register"
-          style={{ color: "#2f66e6", fontWeight: 600 }}
-        >
+        <Link to="/register" style={{ color: "#2f66e6", fontWeight: 600 }}>
           Sign up for free
         </Link>
       </p>
