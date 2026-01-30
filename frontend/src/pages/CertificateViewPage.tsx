@@ -1,5 +1,4 @@
-import AppLayout from "../layout/AppLayout";
-import CertificateCard from "../components/CertificateCard";
+import { useParams, useNavigate } from "react-router-dom";
 
 type Certificate = {
   id: string;
@@ -8,39 +7,69 @@ type Certificate = {
   issuedAt: string;
 };
 
-export default function CertificatesPage() {
+export default function CertificateViewPage() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+
   const certificates: Certificate[] = JSON.parse(
     localStorage.getItem("certificates") || "[]"
   );
 
-  return (
-    <AppLayout title="Certificates">
-      <h2 style={{ marginBottom: 24 }}>Your Certificates</h2>
+  const cert = certificates.find((c) => c.id === id);
+  if (!cert) return null;
 
-      {certificates.length === 0 ? (
-        <div
+  return (
+    <div
+      style={{
+        background: "white",
+        padding: 40,
+        borderRadius: 16,
+        maxWidth: 700,
+        margin: "0 auto",
+        textAlign: "center",
+      }}
+    >
+      <h1>Certificate of Completion</h1>
+      <p>This certifies that</p>
+
+      <h2>{cert.studentName}</h2>
+      <p>has successfully completed</p>
+
+      <h3>{cert.courseTitle}</h3>
+
+      <p style={{ marginTop: 16 }}>
+        Issued on {cert.issuedAt}
+      </p>
+
+      <div style={{ marginTop: 24 }}>
+        <button
+          onClick={() => alert("Downloading certificate...")}
           style={{
-            background: "white",
-            padding: 40,
-            borderRadius: 16,
-            textAlign: "center",
+            background: "#2f66e6",
+            color: "white",
+            padding: "12px 20px",
+            borderRadius: 12,
+            border: "none",
+            fontWeight: 600,
+            marginRight: 12,
           }}
         >
-          No certificates yet.
-        </div>
-      ) : (
-        <div
+          Download PDF
+        </button>
+
+        <button
+          onClick={() => navigate(-1)}
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-            gap: 24,
+            background: "#e5e7eb",
+            padding: "12px 20px",
+            borderRadius: 12,
+            border: "none",
+            fontWeight: 600,
           }}
         >
-          {certificates.map((c) => (
-            <CertificateCard key={c.id} {...c} />
-          ))}
-        </div>
-      )}
-    </AppLayout>
+          Back
+        </button>
+      </div>
+    </div>
   );
 }

@@ -6,6 +6,7 @@ import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 
 // STUDENT
+import StudentLayout from "../layout/StudentLayout";
 import MyLearningPage from "../pages/MylearningPage";
 import CourseCatalogPage from "../pages/CourseCatalogPage";
 import MyProgressPage from "../pages/MyProgressPage";
@@ -41,22 +42,22 @@ export default function AppRoutes() {
       {/* STUDENT MODE */}
       {/* ===================== */}
       {isAuthenticated && role === "student" && (
-        <>
-          <Route path="/" element={<MyLearningPage />} />
-          <Route path="/catalog" element={<CourseCatalogPage />} />
-          <Route path="/progress" element={<MyProgressPage />} />
-          <Route path="/certificates" element={<CertificatesPage />} />
-          <Route
-            path="/course/:id/lesson/:lessonId"
-            element={<CourseLessonPage />}
-          />
-          <Route
-            path="/student/certificates/:id"
-            element={<CertificateViewPage />}
-          />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </>
-      )}
+  <Route element={<StudentLayout />}>
+    <Route path="/" element={<MyLearningPage />} />
+    <Route path="/catalog" element={<CourseCatalogPage />} />
+    <Route path="/progress" element={<MyProgressPage />} />
+    <Route path="/certificates" element={<CertificatesPage />} />
+    <Route
+      path="/course/:id/lesson/:lessonId"
+      element={<CourseLessonPage />}
+    />
+    <Route
+      path="/student/certificates/:id"
+      element={<CertificateViewPage />}
+    />
+    <Route path="*" element={<Navigate to="/" replace />} />
+  </Route>
+)}
 
       {/* ===================== */}
       {/* INSTRUCTOR MODE */}

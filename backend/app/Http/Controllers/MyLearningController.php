@@ -6,12 +6,19 @@ use Illuminate\Http\Request;
 
 class MyLearningController extends Controller
 {
-    public function index(Request $request)
-    {
-        // TEMP stub response so frontend doesn't crash
-        return response()->json([
-            'courses' => [],
-            'progress' => [],
-        ]);
-    }
+    public function index()
+{
+    return response()->json([
+        [
+            "id" => 1,
+            "title" => "Web Development Basics",
+            "progress" => 35
+        ],
+        [
+            "id" => 2,
+            "title" => "React Fundamentals",
+            "progress" => 100
+        ]
+    ]);
+}
 }

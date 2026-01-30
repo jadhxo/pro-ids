@@ -17,7 +17,7 @@ export default function MyProgressPage() {
     api
       .get<Progress[]>("/my-progress")
       .then((response) => {
-        setData(response.data);
+        setData(Array.isArray(response.data) ? response.data : []);
       })
       .catch((error) => {
         console.error("Failed to load progress", error);
@@ -29,19 +29,14 @@ export default function MyProgressPage() {
 
   if (loading) {
     return (
-      <div style={{ padding: 32 }}>
-        <h1 style={{ fontSize: 28, fontWeight: 800 }}>My Progress</h1>
+      <div style={{ padding: 0 }}>
         <p>Loading...</p>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: 32 }}>
-      <h1 style={{ fontSize: 28, fontWeight: 800 }}>
-        My Progress
-      </h1>
-
+    <div style={{ padding: 0 }}>
       {data.map((course) => (
         <div
           key={course.id}
