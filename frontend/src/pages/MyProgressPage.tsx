@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { apiRequest } from "../api/http";
+import api from "../api/client";
 
 type Progress = {
   id: number;
@@ -11,10 +11,30 @@ type Progress = {
 
 export default function MyProgressPage() {
   const [data, setData] = useState<Progress[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    apiRequest("/my-progress").then(setData);
+    api
+      .get<Progress[]>("/my-progress")
+      .then((response) => {
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.error("Failed to load progress", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
+
+  if (loading) {
+    return (
+      <div style={{ padding: 32 }}>
+        <h1 style={{ fontSize: 28, fontWeight: 800 }}>My Progress</h1>
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div style={{ padding: 32 }}>
@@ -35,8 +55,7 @@ export default function MyProgressPage() {
           <h3>{course.title}</h3>
 
           <p>
-            {course.completed_lessons} /{" "}
-            {course.total_lessons} lessons completed
+            {course.completed_lessons} / {course.total_lessons} lessons completed
           </p>
 
           <div

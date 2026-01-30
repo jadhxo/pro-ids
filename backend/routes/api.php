@@ -7,6 +7,11 @@ use App\Http\Controllers\LessonController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\LessonProgressController;
 
+
+use App\Http\Controllers\MyLearningController;
+
+Route::get('/my-progress', [MyLearningController::class, 'index']);
+
 /*
 |--------------------------------------------------------------------------
 | Health

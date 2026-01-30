@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { apiRequest } from "../api/http";
+import api from "../api/client";
 import { Link } from "react-router-dom";
 
 type CourseProgress = {
@@ -10,10 +10,32 @@ type CourseProgress = {
 
 export default function MyLearningPage() {
   const [courses, setCourses] = useState<CourseProgress[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    apiRequest("/my-progress").then(setCourses);
+    api
+      .get<CourseProgress[]>("/my-progress")
+      .then((response) => {
+        setCourses(response.data);
+      })
+      .catch((error) => {
+        console.error("Failed to load courses", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
+
+  if (loading) {
+    return (
+      <div style={{ padding: 32 }}>
+        <h1 style={{ fontSize: 28, fontWeight: 800 }}>
+          My Learning
+        </h1>
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div style={{ padding: 32 }}>
