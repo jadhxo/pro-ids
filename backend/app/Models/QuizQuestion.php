@@ -4,7 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class QuizQuestion extends Model {
-  protected $fillable = ['quiz_id','question','options','correct_answer'];
-  protected $casts = ['options' => 'array'];
+class QuizQuestion extends Model
+{
+    protected $fillable = ['quiz_id', 'question'];
+
+    public function options()
+    {
+        return $this->hasMany(QuizOption::class);
+    }
 }

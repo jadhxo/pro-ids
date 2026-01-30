@@ -10,18 +10,24 @@ class Course extends Model
     use HasFactory;
 
     protected $fillable = [
+        'instructor_id',
         'title',
         'description',
-        'instructor_id',
+        'published',
     ];
-
-    public function lessons()
-    {
-        return $this->hasMany(Lesson::class);
-    }
 
     public function instructor()
     {
         return $this->belongsTo(User::class, 'instructor_id');
+    }
+
+    public function lessons()
+    {
+        return $this->hasMany(Lesson::class)->orderBy('order');
+    }
+
+    public function students()
+    {
+        return $this->belongsToMany(User::class, 'enrollments');
     }
 }

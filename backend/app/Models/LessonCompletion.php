@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class LessonCompletion extends Model
 {
-    use HasFactory;
+    protected $table = 'lesson_user_completions';
 
     protected $fillable = [
         'user_id',
         'lesson_id',
+        'completed_at',
     ];
 }

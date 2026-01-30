@@ -2,31 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Lesson;
+use App\Models\Quiz;
 use Illuminate\Http\Request;
 
 class QuizController extends Controller
 {
-public function show($id) {
-    return Quiz::with('questions')->findOrFail($id);
-}
+    public function store(Request $request, Lesson $lesson)
+    {
+        abort_unless($lesson->course->instructor_id === auth()->id(), 403);
 
-public function submit(Request $request, $id) {
-    $quiz = Quiz::with('questions')->findOrFail($id);
-    $score = 0;
+        $data = $request->validate([
+            'title' => 'required|string',
+        ]);
 
-    foreach ($quiz->questions as $q) {
-        if (($request->answers[$q->id] ?? null) === $q->correct_answer) {
-            $score++;
-        }
+        return Quiz::create([
+            'lesson_id' => $lesson->id,
+            'title' => $data['title'],
+        ]);
     }
 
-    QuizAttempt::create([
-        'user_id' => auth()->id(),
-        'quiz_id' => $quiz->id,
-        'score' => $score,
-    ]);
-
-    return ['score' => $score, 'total' => $quiz->questions->count()];
-}
-
+    public function show(Quiz $quiz)
+    {
+        return $quiz->load('questions.options');
+    }
 }
