@@ -33,24 +33,26 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [token, setToken] = useState<string | null>(
-    localStorage.getItem("token")
-  );
+  const [loading, setLoading] = useState(true);
 
-  const isAuthenticated = !!token;
+  const isAuthenticated = !!user;
 
-  // 🔁 Load user from token on refresh
+  // restore session
   useEffect(() => {
-    if (!token) return;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setLoading(false);
+      return;
+    }
 
-    apiRequest("/me", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    apiRequest("/me")
       .then(setUser)
-      .catch(() => logout());
-  }, [token]);
+      .catch(() => {
+        localStorage.removeItem("token");
+        setUser(null);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   async function login(email: string, password: string) {
     const res = await apiRequest("/login", {
@@ -59,7 +61,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     localStorage.setItem("token", res.token);
-    setToken(res.token);
     setUser(res.user);
   }
 
@@ -75,15 +76,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     localStorage.setItem("token", res.token);
-    setToken(res.token);
     setUser(res.user);
   }
 
   function logout() {
     localStorage.removeItem("token");
-    setToken(null);
     setUser(null);
   }
+
+  if (loading) return null;
 
   return (
     <AuthContext.Provider

@@ -1,5 +1,6 @@
-const API_BASE =
-  import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://verbose-space-potato-97v6q7v9677r299rq-8000.app.github.dev/api";
 
 export async function apiRequest(
   path: string,
@@ -7,22 +8,18 @@ export async function apiRequest(
 ) {
   const token = localStorage.getItem("token");
 
-  const res = await fetch(`${API_BASE}${path}`, {
+  const res = await fetch(`${API_URL}${path}`, {
+    ...options,
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
-    ...options,
   });
 
   if (!res.ok) {
-    let message = "API error";
-    try {
-      const data = await res.json();
-      message = data.message || data.error || message;
-    } catch {}
-    throw new Error(message);
+    const text = await res.text();
+    throw new Error(text || res.statusText);
   }
 
   return res.json();
