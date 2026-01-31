@@ -23,6 +23,13 @@ Route::post('/register', [AuthController::class, 'register']);
 
 /*
 |--------------------------------------------------------------------------
+| Public Certificate Verification (NO AUTH)
+|--------------------------------------------------------------------------
+*/
+Route::get('/certificates/verify/{code}', [CertificateController::class, 'verify']);
+
+/*
+|--------------------------------------------------------------------------
 | Authenticated Routes
 |--------------------------------------------------------------------------
 */
@@ -76,6 +83,6 @@ Route::middleware(['auth:api'])->group(function () {
     // Course progress
     Route::get('/courses/{course}/progress', [ProgressController::class, 'courseProgress']);
 
-    // Certificate
+    // Certificate generation (STRICTLY AUTHENTICATED)
     Route::post('/courses/{course}/certificate', [CertificateController::class, 'generate']);
 });
